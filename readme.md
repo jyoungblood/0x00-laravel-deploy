@@ -46,12 +46,10 @@ Before installing, make sure you have set up the following with cPanel:
   - [ ] (optional) SSH keys - I personally like to have an SSH key saved locally so I'm not prompted for a password
   - [ ] Git access set up for SSH user - I like to share with other accounts
     - Do this as root to copy from another site:
-    - ```
-$ cp /home/othersite/.gitconfig /home/example
-$ mv /home/example/.ssh /home/example/.ssh_bk
-$ cp -R /home/othersite/.ssh /home/example
-$ chown -R /home/example/.ssh
-    ```
+    - ```mv /home/example/.ssh /home/example/.ssh_bk```
+    - ```cp /home/othersite/.gitconfig /home/example```
+    - ```cp -R /home/othersite/.ssh /home/example```
+    - ```chown -R example:example /home/example/.ssh```
 
 - [ ] Root domain (`example.com`) and relevant subdomains (`staging.example.com`, `dev.example.com`, etc)
   - Docroots are expected to be the cPanel defaults: `public_html`, `staging.example.com`, etc
