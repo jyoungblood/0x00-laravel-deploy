@@ -67,7 +67,7 @@ Before installing, make sure you have set up the following with cPanel:
 
 - [ ] MySQL database and web user
   - Set the appropriate permissions for the web user and assign user to db
-    - _(fixit what are the recommended permission?)_ 
+    - _(fixit what are the recommended permissions?)_ 
     - Note credentials to be added to .env file during installation
   - Make sure you're developing with the same version of MySQL as the server uses (5.7, 8, etc)
   - Dump & import your dev db (I do this all with TablePlus)
