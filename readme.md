@@ -4,7 +4,6 @@
 
 
 
-✅
 # OVERVIEW
 
 These are installation instructions and scripts for deploying a Laravel application on a WHM-based VPS. This is the "bare bones" minimal deployment required to run an app on this stack (nothing included for ZDD, rollbacks, post-receive hooks, etc)
