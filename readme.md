@@ -4,7 +4,7 @@
 
 
 
-# OVERVIEW
+# Overview
 
 These are installation instructions and scripts for deploying a Laravel application on a WHM-based VPS. This is the "bare bones" minimal deployment required to run an app on this stack (nothing included for ZDD, rollbacks, post-receive hooks, etc)
 
@@ -38,7 +38,7 @@ On the server, the _(relevant parts of the)_ directory structure will look like 
 
 
 
-# SERVER PREP / PREREQUISITES
+# Server prep / prerequisites
 
 Before installing, make sure you have set up the following with cPanel:
 
@@ -96,8 +96,8 @@ $ chown -R /home/example/.ssh
 
 
 
-❌
-# INSTALLATION
+
+# Installation
 
 ### Local machine:
 
@@ -233,7 +233,7 @@ Either way, it's time for a smoke break 🚬
 
 
 
-# CI/CD WORKFLOW
+# CI/CD workflow
 
 If everything has been set up correctly, you should be able to run the deployment script locally and watch as the process unfolds:
 ```
@@ -265,7 +265,7 @@ We've sure come a long way from just FTP'ing files to a public directory, huh?
 
 
 
-# FUTURE IMPROVEMENTS
+# Future improvements
 
 - [ ] deploy-remote: read site url from .env file and show link to site at the end of the process - https://askubuntu.com/questions/1389904/read-from-env-file-and-set-as-bash-variables
 
@@ -304,7 +304,7 @@ We've sure come a long way from just FTP'ing files to a public directory, huh?
 
 
 
-# ADDITIONAL RESOURCES
+# Additional resources
 - [Laravel - Deployment](https://laravel.com/docs/10.x/deployment)
 - _(fixit add more, I've got a ton I'm sure)_
 
