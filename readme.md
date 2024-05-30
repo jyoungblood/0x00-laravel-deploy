@@ -38,26 +38,28 @@ On the server, the _(relevant parts of the)_ directory structure will look like 
 
 
 
-# Server prep / prerequisites
+# A - Server prep
 
 Before installing, make sure you have set up the following with cPanel:
 
-- [ ] cPanel user with SSH access (for the whole cpanel account, site owner or whatever)
-  - [ ] (optional) SSH keys - I personally like to have an SSH key saved locally so I'm not prompted for a password
-  - [ ] Git access set up for SSH user - I like to share with other accounts
+- [ ] 1 - cPanel user with SSH access (for the whole cpanel account, site owner or whatever)
+  - [ ] 1a - (optional) SSH keys - I personally like to have an SSH key saved locally so I'm not prompted for a password
     - Do this as root to copy from another site:
     - ```mv /home/example/.ssh /home/example/.ssh_bk```
-    - ```cp /home/othersite/.gitconfig /home/example```
     - ```cp -R /home/othersite/.ssh /home/example```
     - ```chown -R example:example /home/example/.ssh```
+  - [ ] 1b - Git config for SSH user - I like to share with other accounts (based on JY acct)
+    - Do this as root to copy from another site:
+    - ```cp /home/othersite/.gitconfig /home/example```
+    - ```chown example:example /home/example/.gitconfig```
 
-- [ ] Root domain (`example.com`) and relevant subdomains (`staging.example.com`, `dev.example.com`, etc)
+- [ ] 2 - Root domain (`example.com`) and relevant subdomains (`staging.example.com`, `dev.example.com`, etc)
   - Docroots are expected to be the cPanel defaults: `public_html`, `staging.example.com`, etc
   - ?? maybe let AutoSSL run idk (after it's run once you should be fine)
   - You _could_ choose to "Force HTTPS Redirect" on the cPanel Domains screen, but we'll be adding a .htaccess rule to do the same thing
   - PHP default version should be >= 8.3. If not, change this on the MultiPHP screen, but only AFTER the .htaccess
 
-- [ ] Update any PHP defaults in the MultiPHP INI editor. I usually do something like this:
+- [ ] 3 - Update any PHP defaults in the MultiPHP INI editor. I usually do something like this:
   - allow_url_fopen: enabled
   - file_uploads: enabled
   - post_max_size: 100M
@@ -65,14 +67,14 @@ Before installing, make sure you have set up the following with cPanel:
   - zlib.output_compression: enabled
   - etc...
 
-- [ ] MySQL database and web user
+- [ ] 4 - MySQL database and web user
   - Set the appropriate permissions for the web user and assign user to db
     - _(fixit what are the recommended permissions?)_ 
     - Note credentials to be added to .env file during installation
   - Make sure you're developing with the same version of MySQL as the server uses (5.7, 8, etc)
   - Dump & import your dev db (I do this all with TablePlus)
 
-- [ ] Required PHP & Composer installation
+- [ ] 5 - Required PHP & Composer installation
   - PHP version should be 8.3 or higher (upgrade if needed)
   - Laravel requires the `fileinfo` extension for PHP
     - Installed as root with EasyApache
@@ -95,26 +97,24 @@ Before installing, make sure you have set up the following with cPanel:
 
 
 
-# Installation
+# B - Installation - Local machine
 
-### Local machine:
-
-In the root of your Laravel application, add the local deploy script (and add to .gitignore):
+1 - In the root of your Laravel application, add the local deploy script (and add to .gitignore):
 ```
 curl https://raw.githubusercontent.com/hxgf/0x00-laravel-deploy/master/deploy.sh -o deploy.sh && echo "/deploy.sh" >> .gitignore
 ```
 
-Edit `deploy.sh` to add your SSH login info, deployment targets, and working Git branch. After editing, make sure the script is executable:
+2 - Edit `deploy.sh` to add your SSH login info, deployment targets, and working Git branch. After editing, make sure the script is executable:
 ```
 chmod +x deploy.sh
 ```
 
-Add a rule to your .htaccess file to follow symlinks:
+3 - Add a rule to your .htaccess file to follow symlinks:
 ```
 printf "Options +FollowSymLinks\n\n" >> public/.htaccess
 ```
 
-Optionally, you can add a rule to force HTTPS (which I usually do). In the same `public/.htaccess` file, after "RewriteEngine On" add:
+4 - Optionally, you can add a rule to force HTTPS (which I usually do). In the same `public/.htaccess` file, after "RewriteEngine On" add:
 
 ```
 RewriteCond %{HTTPS} off
@@ -123,14 +123,14 @@ RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 NOTE: If cPanel has added rules for MultiPHP or .well-known to the initial versions of .htaccess (in the current docroots), you can copy them to this file now.
 
-This deployment method also depends on the built "public" files being shipped to the server in the repo, so comment out the default rules in `.gitignore` like so:
+5 - This deployment method also depends on the built "public" files being shipped to the server in the repo, so comment out the default rules in `.gitignore` like so:
 ```
 # /public/build
 # /public/hot
 ```
 
 
-Finally, do one last push to the working branch before cloning on the server: 
+6 - Finally, do one last push to the working branch before cloning on the server: 
 ```
 $ git add --all
 $ git commit -am "update .htaccess, add 'public' build files, ready to set up deployment"
@@ -140,11 +140,11 @@ $ git push origin main
 
 
 
-### On the server:
+# C - Installation - On the server
 
 Next, we'll add the codebases to the server, install necessary composer packages
 
-Log in to your server (via SSH, as the cPanel user mentioned earlier), and in your site home directory (`/home/example/`) run the following commands:
+1 - Log in to your server (via SSH, as the cPanel user mentioned earlier), and in your site home directory (`/home/example/`) run the following commands:
 ```
 $ mkdir laravel && cd laravel
 $ git clone git@bitbucket.org:$user/$repo.git production && cd production
@@ -152,7 +152,7 @@ $ /opt/cpanel/composer/bin/composer install --no-interaction --prefer-dist --opt
 $ ln -s /home/example/laravel/production/storage/app/public /home/example/laravel/production/public/storage
 $ chmod -R 755 /home/example/laravel/production/storage
 $ chmod -R 755 /home/example/laravel/production/bootstrap/cache
-$ curl https://raw.githubusercontent.com/hxgf/0x00-laravel-deploy/master/.env -o production/.env
+$ curl https://raw.githubusercontent.com/hxgf/0x00-laravel-deploy/master/.env -o .env
 $ nano production/.env
   // see .env notes below
 $ mv /home/example/public_html /home/example/public_html_bk
@@ -160,7 +160,7 @@ $ ln -s /home/example/laravel/production/public /home/example/public_html
 $ cp -R /home/example/public_html_bk/.well-known /home/example/laravel/production/public
 ```
 
-Repeat the process for staging and any additional environments:
+2 - Repeat the process for staging and any additional environments:
 ```
 $ cd /home/example/laravel
 $ git clone git@bitbucket.org:$user/$repo.git staging && cd staging
@@ -170,7 +170,7 @@ $ chmod -R 755 /home/example/laravel/staging/storage
 $ chmod -R 755 /home/example/laravel/staging/bootstrap/cache
 $ touch staging/.env
 $ nano staging/.env
-$ curl https://raw.githubusercontent.com/hxgf/0x00-laravel-deploy/master/.env -o staging/.env
+$ curl https://raw.githubusercontent.com/hxgf/0x00-laravel-deploy/master/.env -o .env
 $ nano staging/.env
   // see .env notes below
 $ mv /home/example/staging.example.com /home/example/staging.example.com_bk
@@ -179,13 +179,13 @@ $ cp -R /home/example/staging.example.com_bk/.well-known /home/example/laravel/s
 ```
 
 
-Finally, add the deployment script to the `laravel/` directory:
+3 - Finally, add the deployment script to the `laravel/` directory:
 ```
 $ cd home/example/laravel
 $ curl https://raw.githubusercontent.com/hxgf/0x00-laravel-deploy/master/deploy-remote.sh -o deploy-remote.sh && chmod +x deploy-remote.sh
 ```
 
-You could edit the branch and PHP/Composer binary path variables at the beginning of this file, but (assuming you're using "main") it should be good to go as-is.
+NOTE: You could edit the branch and PHP/Composer binary path variables at the beginning of this file, but (assuming you're using "main") it should be good to go as-is.
 
 
 At this point, the site should be online at `https://example.com` and `https://staging.example.com` 🤞🤞
@@ -231,7 +231,7 @@ Either way, it's time for a smoke break 🚬
 
 
 
-# CI/CD workflow
+# D - CI/CD workflow
 
 If everything has been set up correctly, you should be able to run the deployment script locally and watch as the process unfolds:
 ```
@@ -258,7 +258,8 @@ We've sure come a long way from just FTP'ing files to a public directory, huh?
 
 
 
-
+---
+---
 
 
 
@@ -303,7 +304,7 @@ We've sure come a long way from just FTP'ing files to a public directory, huh?
 
 
 # Additional resources
-- [Laravel - Deployment](https://laravel.com/docs/10.x/deployment)
+- [Laravel - Deployment](https://laravel.com/docs/11.x/deployment)
 - _(fixit add more, I've got a ton I'm sure)_
 
 
