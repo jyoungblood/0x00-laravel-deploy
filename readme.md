@@ -178,29 +178,6 @@ $ ln -s /home/example/laravel/staging/public /home/example/staging.example.com
 $ cp -R /home/example/staging.example.com_bk/.well-known /home/example/laravel/staging/public
 ```
 
-
-3 - Finally, add the deployment script to the `laravel/` directory:
-```
-$ cd home/example/laravel
-$ curl https://raw.githubusercontent.com/hxgf/0x00-laravel-deploy/master/deploy-remote.sh -o deploy-remote.sh && chmod +x deploy-remote.sh
-```
-
-NOTE: You could edit the branch and PHP/Composer binary path variables at the beginning of this file, but (assuming you're using "main") it should be good to go as-is.
-
-
-At this point, the site should be online at `https://example.com` and `https://staging.example.com` 🤞🤞
-
-If it's not, it's because you've done something wrong and god is mad at you. If it all worked, then that's great! 
-Either way, it's time for a smoke break 🚬
-
-#### NOTES:
-- I haven't annotated what every command does, maybe I will at some point? Who cares?
-- The storage symlink is the same thing that `php artisan storage:link` creates, you could do that if you'd rather.
-- We're using the full path for the Composer binary. It will likely be the same on most systems, but you might want to run `which composer` first to verify.
-- You could also run Laravel migrations and seeders at this point, but it's not necessary if you're starting with a dump of your local database (like I usually do)
-- Permissions issues? Composer errors?_(fixit note what to do in case of problems)_
-
-
 #### .env NOTES:
 - Important variables to note, different from dev version:
   - APP_ENV=production
@@ -210,6 +187,20 @@ Either way, it's time for a smoke break 🚬
 - You _could_ generate a new application key here (using `php artisan key:generate`), but it's also ok to use the same key as your local dev .env
 - It's ok to put a copy in the `laravel/` directory if you're going to need multiple copies of this
 
+
+3 - Finally, add the deployment script to the `laravel/` directory:
+```
+$ cd home/example/laravel
+$ curl https://raw.githubusercontent.com/hxgf/0x00-laravel-deploy/master/deploy-remote.sh -o deploy-remote.sh && chmod +x deploy-remote.sh
+```
+
+4 - (optional) You could edit the branch and PHP/Composer binary path variables at the beginning of this file, but (assuming you're using "main") it should be good to go as-is.
+
+
+At this point, the site should be online at `https://example.com` and `https://staging.example.com` 🤞🤞
+
+If it's not, it's because you've done something wrong and god is mad at you. If it all worked, then that's great! 
+Either way, it's time for a smoke break 🚬
 
 
 
@@ -261,6 +252,14 @@ We've sure come a long way from just FTP'ing files to a public directory, huh?
 ---
 ---
 
+
+
+# Troubleshooting / Notes
+- I haven't annotated what every command does, maybe I will at some point? Who cares?
+- The storage symlink is the same thing that `php artisan storage:link` creates, you could do that if you'd rather.
+- We're using the full path for the Composer binary. It will likely be the same on most systems, but you might want to run `which composer` first to verify.
+- You could also run Laravel migrations and seeders on initial install (steps C1 & C2), but it's not necessary if you're starting with a dump of your local database (like I usually do)
+- Permissions issues? Composer errors?_(fixit note what to do in case of problems)_
 
 
 
