@@ -101,7 +101,7 @@ Before installing, make sure you have set up the following with cPanel:
 
 1 - In the root of your Laravel application, add the local deploy script (and add to .gitignore):
 ```
-curl https://raw.githubusercontent.com/hxgf/0x00-laravel-deploy/master/deploy.sh -o deploy.sh && echo "/deploy.sh" >> .gitignore
+curl https://raw.githubusercontent.com/hxgf/0x00-laravel-deploy/master/deploy.sh -o deploy.sh && echo "/deploy.sh\n" >> .gitignore
 ```
 
 2 - Edit `deploy.sh` to add your SSH login info, deployment targets, and working Git branch. After editing, make sure the script is executable:
